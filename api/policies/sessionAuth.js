@@ -1,4 +1,11 @@
 /**
+ * Provided by default by Sails but not in use.
+ * Using authenticated.js instead
+ *
+ * Max H. - 9/19/15
+ */
+
+/**
  * sessionAuth
  *
  * @module      :: Policy
@@ -9,7 +16,7 @@
  */
 module.exports = function(req, res, next) {
 
-  // User is allowed, proceed to the next policy, 
+  // User is allowed, proceed to the next policy,
   // or if this is the last policy, the controller
   if (req.session.authenticated) {
     return next();
