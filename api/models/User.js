@@ -57,7 +57,11 @@ module.exports = {
   },
 
   afterCreate: function (user, cb) {
-    sails.hooks.email.send('newUserCreatedEmail', {}, {
+    sails.hooks.email.send('newUserCreatedEmail',
+      {
+        newUserEmail: user.email
+      },
+      {
       to: "mharris7190@gmail.com",
       subject: "A new user was created with PRKY!"
     },
