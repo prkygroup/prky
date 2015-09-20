@@ -32,8 +32,33 @@ module.exports.routes = {
   *                                                                          *
   ***************************************************************************/
 
-  '/': {view: 'homepage'}
-  // 'GET /signup': {view: 'signup'}
+  '/': {view: 'homepage'},
+
+
+  /***************************************************************************
+  *                     AUTHENTICATOIN - SIGNUP - LOGIN                      *
+  ***************************************************************************/
+
+  'GET /login': {
+      // controller: 'AuthController', // Can also map this to a function
+      // action: 'login'               // that renders it's own view, but
+      view: 'auth/login'               // we're going direct instead
+  },
+  'POST /login': {
+      controller: 'AuthController',
+      action: 'login'
+  },
+  'GET /logout': {
+      controller: 'AuthController',
+      action: 'logout'
+  },
+  'GET /signup': {
+      view: 'auth/signup'
+  },
+  'POST /signup': {
+      controller: 'UserController',
+      action: 'create'
+  }
 
   /***************************************************************************
   *                                                                          *
