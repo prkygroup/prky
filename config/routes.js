@@ -48,16 +48,21 @@ module.exports.routes = {
       controller: 'AuthController',
       action: 'login'
   },
+  'POST /signup': {
+    controller: 'UserController',
+    action: 'create'
+  },
   'GET /logout': {
       controller: 'AuthController',
       action: 'logout'
   },
-  'GET /signup': {
-      view: 'auth/signup'
+  'GET /auth/facebook': {
+      controller: 'AuthController',
+      action: 'facebook'
   },
-  'POST /signup': {
-      controller: 'UserController',
-      action: 'create'
+  'GET /auth/facebook/callback': {
+      controller: 'AuthController',
+      action: 'facebookCallback'
   }
 
   /***************************************************************************
