@@ -42,7 +42,30 @@ module.exports = {
     logout: function(req, res) {
         req.logOut();
         res.send('logout successful');
+    },
+
+    facebook: function (req, res, next) {
+        passport.authenticate('facebook', {scope: 'email, user_about_me'},
+            function (err, user) {
+                req.logIn(user, function (err) {
+                    if (err) {
+                        req.session.flash = 'There was an error';
+                        res.redirect('/login');
+                    } else {
+                        req.session.user = user;
+                        res.redirect('/');
+                    }
+                });
+            }
+        )(req, res, next);
+    },
+
+    facebookCallback: function (req, res, next) {
+        passport.authenticate('facebook',
+            { successRedirect: '/', failureRedirect: '/login' }
+        )(req, res, next);
     }
+
 };
 
 module.exports.blueprints = {

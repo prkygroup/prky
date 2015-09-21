@@ -26,8 +26,14 @@ module.exports = {
             unique: true
         },
         password: {
+            type: 'string'
+        },
+        facebookId: {
             type: 'string',
-            required: true
+            unique: true
+        },
+        profilePictureUrl: {
+            type: 'string'
         },
         // override default toJSON
         toJSON: function() {
@@ -38,35 +44,44 @@ module.exports = {
   },
 
   beforeCreate: function(user, cb) {
-      // Remove passwordConfirm in request
-      if (user.passwordConfirm)
-        delete user.passwordConfirm;
+    // Remove passwordConfirm in request
+    if (user.passwordConfirm)
+    delete user.passwordConfirm;
 
-      bcrypt.genSalt(10, function(err, salt) {
-          bcrypt.hash(user.password, salt, function(err, hash) {
-            if(err) {
-                console.log(err);
-                cb(err);
-            } else {
-                user.password = hash;
-                // console.log(hash);
-                cb(null, user);
-            }
-          });
-      });
+    if (user.password) {
+        bcrypt.genSalt(10, function(err, salt) {
+            bcrypt.hash(user.password, salt, function(err, hash) {
+                if(err) {
+                    console.log(err);
+                    cb(err);
+                } else {
+                    user.password = hash;
+                    // console.log(hash);
+                    cb(null, user);
+                }
+            });
+        });
+    } else if (user.facebookId){
+        cb(null, user);
+    } else {
+        cb({message: 'something went wrong'});
+    }
   },
 
   afterCreate: function (user, cb) {
     sails.hooks.email.send('newUserCreatedEmail',
       {
-        newUserEmail: user.email
+        name: user.name,
+        profilePictureUrl: user.profilePictureUrl,
+        newUserEmail: user.email,
+        facebookId: user.facebookId
       },
       {
       to: "mharris7190@gmail.com",
       subject: "A new user was created with PRKY!"
     },
     function(err) {
-      console.log(err || "It worked!");
+      console.log(err || "After Create Email Sent!");
       if (err) {
         cb(err);
       } else {
