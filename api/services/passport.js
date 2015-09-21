@@ -1,6 +1,7 @@
 var passport = require('passport'),
     LocalStrategy = require('passport-local').Strategy,
- bcrypt = require('bcrypt');
+    FacebookStrategy = require('passport-facebook').Strategy,
+    bcrypt = require('bcrypt');
 
 passport.serializeUser(function(user, done) {
     done(null, user.id);
@@ -26,4 +27,23 @@ passport.use(new LocalStrategy({
             });
         });
     }
+));
+
+passport.use(new FacebookStrategy({
+    clientID: "1494699380824184",
+    clientSecret: "f6994310586cdffd9a2c149f8fceeed8",
+    callbackURL: "http://localhost:1337/auth/facebook/callback",
+    profileFields: ['id', 'displayName', 'emails','photos'],
+    enableProof: false
+  }, function (accessToken, refreshToken, profile, done) {
+    User.findOrCreate(
+        {facebookId: profile.id},
+        {facebookId: profile.id,
+         name: profile.displayName,
+         email: profile.emails[0].value,
+         profilePictureUrl: profile.photos[0].value},
+        function (err, user) {
+            done(err, user);
+        });
+  }
 ));
